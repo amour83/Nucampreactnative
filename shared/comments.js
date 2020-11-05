@@ -147,7 +147,7 @@ export const COMMENTS =
     {
         id: 18,
         campsiteId: 3,
-        rating: 4, 
+        rating: 5, 
         text: "The campground was beautiful, but the bugs could bite sometimes.",
         author: "Brennen Ech",
         date: "2017-06-17T03:33Z"
@@ -160,4 +160,8 @@ export const COMMENTS =
         author: "McKenzie Sebastian",
         date: "2019-02-18T18:12Z"
     }
+    
+    
+
+    
 ]
