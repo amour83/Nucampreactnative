@@ -332,18 +332,15 @@ class Main extends Component {
         this.props.fetchComments();
         this.props.fetchPromotions();
         this.props.fetchPartners();
-
-        NetInfo.fetch().then(connectionInfo => {
-            (Platform.OS === 'ios')
-                ? Alert.alert('Initial Network Connectivity Type:', connectionInfo.type)
-                : ToastAndroid.show('Initial Network Connectivity Type: ' +
-                    connectionInfo.type, ToastAndroid.LONG);
-        });
+        this.showNetInfo();
 
         this.unsubscribeNetInfo = NetInfo.addEventListener(connectionInfo => {
             this.handleConnectivityChange(connectionInfo);
         });
+
     }
+
+        
 
     componentWillUnmount() {
         this.unsubscribeNetInfo();
@@ -365,12 +362,23 @@ class Main extends Component {
                 connectionMsg = 'You are now connected to a WiFi network.';
                 break;
         }
-        (Platform.OS === 'ios')
-            ? Alert.alert('Connection change:', connectionMsg)
-            : ToastAndroid.show(connectionMsg, ToastAndroid.LONG);
-    
+        
+
+
+    }
+
+    async showNetInfo() {
+        let connectionInfo = await NetInfo.fetch()
+
+            (Platform.OS === 'ios')
+            ? Alert.alert('Initial Network Connectivity Type:' , connectionInfo.type)
+            :ToastAndroid.show('Initial Network Connectivity Type: ' +
+            connectionInfo.type , ToastAndroid.LONG);
         
     }
+
+        
+
 
     render() {
         return (
@@ -383,6 +391,7 @@ class Main extends Component {
         );
     }
 }
+
 
 const styles = StyleSheet.create({
     container: {
@@ -412,5 +421,6 @@ const styles = StyleSheet.create({
         fontSize: 24
     }
 });
+
 
 export default connect(null, mapDispatchToProps)(Main);

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Image, ImageManipulator } from 'react-native';
+import { View, StyleSheet, ScrollView, Image} from 'react-native';
 import { Input, CheckBox, Button, Icon } from 'react-native-elements';
 import * as SecureStore from 'expo-secure-store';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { baseUrl } from '../shared/baseUrl';
-
+import * as ImageManipulator from 'expo-image-manipulator'
 class LoginTab extends Component {
 
     constructor(props) {
@@ -164,6 +164,32 @@ class RegisterTab extends Component {
         }
     }
 
+    getimageFromGallery = async () =>{
+        const cameraRollPermissions = await Permissions.askAsync(Permission.Camera_Roll);
+
+        if(cameraRollPermissions.status ==='granted') {
+            const capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowesEditing: true,
+                aspect: [1,1]
+            });
+            if (!capturedImage.Cancelled) {
+                console.log(capturedImage.uri);
+                this.processImage(capturediImage.uri);
+            }
+        }
+    }
+
+
+    processingimage = async (imguri) => {
+        const processingImage = await ImageManipulator.manipulateAsync(
+            imgUri,
+            [{resize: {width: 400}}],
+            {format: ImageManipulator.SaveFormart.PNG}
+        );
+        console.Log(processedImage);
+        this.setState({imageUrl: processedImage.uri})
+    }
+
     handleRegister() {
         console.log(JSON.stringify(this.state));
         if (this.state.remember) {
@@ -190,8 +216,14 @@ class RegisterTab extends Component {
                         <Button
                             title='Camera'
                             onPress={this.getImageFromCamera}
+                            
                         />
-                    </View>
+                        <Button
+                            title='Gallery'
+                            onPress={this.getImageFromGallery}
+                            
+                        />                   
+                        </View>
                     <Input
                         placeholder='Username'
                         leftIcon={{type: 'font-awesome', name: 'user-o'}}
