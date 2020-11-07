@@ -6,9 +6,6 @@ import { baseUrl } from '../shared/baseUrl';
 import { postFavorite,postComment} from '../redux/ActionCreators';
 import * as Animatable from 'react-native-animatable';
 
-
-
-
 const mapStateToProps = state => {
     return {
         campsites: state.campsites,
@@ -20,7 +17,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     postFavorite: campsiteId => (postFavorite(campsiteId)),
     postComment: (campsiteId, rating, author, text, date) => (postComment(campsiteId, rating, author, text, date))
-
 };
 
 function RenderCampsite(props) {
@@ -65,6 +61,16 @@ function RenderCampsite(props) {
         }
     });
 
+    const shareCampsite = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: `${title}: ${message} ${url}`,
+            url: url
+        },{
+            dialogTitle: 'Share ' + title
+        });
+    };
+
     if (campsite) {
         return (
             <Animatable.View
@@ -90,13 +96,21 @@ function RenderCampsite(props) {
                     onPress={() => props.favorites ?
                         console.log('Already set as a favorite') : props.markFavorite()}
                 />
-                <Icon name={props.favorite ? 'pencil' : 'pencil'}
+                <Icon name={'pencil'}
                     type='font-awesome'
                     color='#5637DD'
                     raised
                     reverse
                     onPress={() => props.onShowModal()}
                     />
+                    <Icon
+                            name={'share'}
+                            type='font-awesome'
+                            color='#5637DD'
+                            raised
+                            reverse
+                            onPress={() => shareCampsite(campsite.name, campsite.description, baseUrl + campsite.image)} 
+                        />
                         </View>
                 </Card>
             </Animatable.View>
@@ -104,7 +118,6 @@ function RenderCampsite(props) {
     }
     return <View />;
 }
-
 
 function RenderComments({ comments }) {
 
@@ -244,7 +257,6 @@ class CampsiteInfo extends Component {
         );
     }
 }
-
 const styles = StyleSheet.create({
     cardRow: {
         alignItems: 'center',
@@ -260,4 +272,3 @@ const styles = StyleSheet.create({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CampsiteInfo);
-
